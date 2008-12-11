@@ -1,0 +1,44 @@
+transform
+	-identity
+	-rotations
+	-translation
+	-reflect
+	-scale
+	-space (composite of primitive transforms)
+	
+projection
+	-perspective
+	-orthographic
+	
+camera	
+	
+geometry
+	-vertex
+	-line
+	-ray
+	-plane
+	-boundary
+		-area
+			-square
+			-circle
+			-ellipse
+			-
+			-compound
+			-polygon
+				-triangle
+				-quad
+		-volume
+			-cube
+			-box (axially aligned rectangular prism)
+			-sphere
+			-tetrahedron
+			-convex hull
+			-compound (logical union, intersection, difference)
+	
+light
+	-spot
+	-directional
+	-point
+		
+material
+	-
