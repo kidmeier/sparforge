@@ -1,0 +1,22 @@
+#!/bin/bash
+sparforge=`dirname $0`
+clojure_trunk=$HOME/devl/contrib/clojure-trunk/clojure.jar
+clojure_contrib=$HOME/devl/contrib/clojure-contrib-trunk/clojure-contrib.jar
+clojure_swank=$HOME/devl/contrib/swank-clojure/
+
+# Buid class path; any .jar under $sparforge/lib is placed on the classpath
+classpath=".:$clojure_trunk:$clojure_contrib"
+for jar in $sparforge/lib/*.jar
+do
+  classpath="${classpath}:$jar"
+done
+
+launch_swank="\
+(add-classpath \"file:$clojure_swank\")\
+(require (quote swank.swank))\
+(swank.swank/start-server \"swank-port\" :encoding \"utf-8-unix\" :port 4005)\
+"
+
+echo $launch_swank > $sparforge/launch-swank.clj
+
+java -cp $classpath -Djava.library.path=$sparforge/lib clojure.main -i launch-swank.clj
