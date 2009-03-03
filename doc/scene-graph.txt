@@ -1,10 +1,18 @@
-transform
-	-identity
-	-rotations
-	-translation
-	-reflect
-	-scale
-	-space (composite of primitive transforms)
+(node [rotate-x 45]
+ (node [scale 2 2 2]
+  (node [triangle]))
+
+
+ (node
+
+group
+	transform
+		-identity
+		-rotations
+		-translation
+		-reflect
+		-scale
+		-space (composite of primitive transforms)
 	
 projection
 	-perspective
@@ -13,7 +21,9 @@ projection
 camera	
 	
 geometry
-	-vertex
+	-array
+	-
+	-coord
 	-line
 	-ray
 	-plane

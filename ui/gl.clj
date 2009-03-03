@@ -1,20 +1,25 @@
 (ns ui.gl
   (:import (javax.media.opengl GL DebugGL TraceGL)))
 
-(defmacro with-gl [gl & body]
-  `(doto ~gl
+(def *gl* nil)
+
+(defmacro bind-gl [drawable & body]
+  `(binding [*gl* (.getGL ~drawable)]
      ~@body))
 
-(defmacro with-primitive [prim gl & body]
-  `(doto ~gl
-     (glBegin ~prim)
+(defmacro with-gl [& body]
+  `(doto *gl*
+     ~@body))
+
+(defmacro with-primitive [prim & body]
+  `(doto *gl*
+     (.glBegin ~prim)
      ~@body
-     (glEnd)))
+     (.glEnd)))
 
-(defmacro triangles [gl & body]
+(defmacro triangles [& body]
   `(with-primitive GL/GL_TRIANGLES
-       ~gl
-     ~@body))
+       ~@body))
 
 (defn trace-gl [drawable out]
   (.setGL drawable (new TraceGL (.getGL drawable) out)))

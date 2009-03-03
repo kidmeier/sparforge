@@ -3,14 +3,14 @@
 	   (javax.media.opengl GL GLAutoDrawable GLCanvas GLEventListener)
 	   (com.sun.opengl.util FPSAnimator)))
 
-(defn- open-frame 
+(defn open-frame 
   [#^String title 
-   #^GLEventListener event-listener]
+   #^GLEventListener gl-ev-listener]
   
   (let [frame (new Frame title),
 	canvas (new GLCanvas)]
  
-    (.addGLEventListener canvas event-listener)
+    (.addGLEventListener canvas gl-ev-listener)
 
     (.add frame canvas)
     (.pack frame)
@@ -18,10 +18,3 @@
     (.setVisible frame true)
 
     [frame canvas]))
-
-(defn launch-game [title event-listener]
-  (let [[frame canvas] (open-frame title event-listener),
-	animator (new FPSAnimator canvas 30)]
-    (.start animator)
-    animator))
-
