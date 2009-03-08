@@ -18,7 +18,12 @@
 			 {:proto (:symbol ^~parent),
 			  :prototype ~parent,
 			  :symbol '~symb}))
-		     ([& args]))]
+		     ([& args#]
+			(with-meta 
+			 (merge (or ~parent {}) ~properties)
+			 {:proto (:symbol ^~parent),
+			  :prototype ~parent,
+			  :symbol '~symb})))]
 
     ;; If we have a prototype, we emit the def-form, plus we also create an isa
     ;; relationship between the derived node and the prototype; we still return
@@ -96,4 +101,3 @@
       (z/root loc)
       (let [[new-loc & new-args] (apply f loc (z/node loc) args)]	
 	(recur (z/next new-loc) new-args)))))
-

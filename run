@@ -1,13 +1,13 @@
 #!/bin/bash
 
 sparforge=`dirname $0`
-clojure_trunk=/home/mike/devl/contrib/clojure-trunk/clojure.jar
+clojure_trunk=$CLOJURE_HOME/clojure.jar
 
 # Buid class path; any .jar under $sparforge/lib is placed on the classpath
-classpath="$clojure_trunk"
-for jar in $home/lib/*.jar
+classpath=".:$clojure_trunk"
+for jar in $sparforge/lib/*.jar
 do
-  classpath="${cp}:$jar"
+  classpath="${classpath}:$jar"
 done
 
 java -cp $classpath -Djava.library.path=$sparforge/lib clojure.main -i ui/main.clj -e "(ui.main/-main \"Sparforge\")" -r

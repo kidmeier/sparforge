@@ -29,12 +29,16 @@
 ;; Standard keyboard and mouse events
 (defevent key-down)
 (defevent key-up)
-(defevent key-pressed)
+(defevent key-typed)
 
 (defevent mouse-clicked)
 (defevent mouse-down)
 (defevent mouse-up)
 (defevent mouse-entered)
 (defevent mouse-exited)
+
+(defevent mouse-dragged)
+(defevent mouse-moved)
+
 (defevent mouse-wheel-moved)
 

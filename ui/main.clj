@@ -1,108 +1,33 @@
 (ns ui.main
-  (:use core.event core.prototype ui.launcher ui.gl)
-  (:import (javax.media.opengl DebugGL TraceGL GL GLEventListener)
-	   (java.awt.event KeyListener MouseListener MouseMotionListener
-			   MouseWheelListener))
+  (:use core.gl core.util)
+  (:import (java.awt Dimension Frame)
+	   (javax.media.opengl GLCanvas))
   (:gen-class))
 
-(def *frame* nil)
-(def *canvas* nil)
+(defn- open-frame 
+  "Open an AWT frame with the given GLCanvas added to it."
+  [#^String title
+   #^GLCanvas canvas
+   & props]
+  
+  (let [frame (new Frame title)]
+ 
+    (.add frame canvas)
 
-(defmulti update :symbol)
-(defmethod update :default [node t dt] 
-  (println "ui:update"))
+    ;; Apply the given properties to the frame
+    (apply-properties frame (apply hash-map props))
 
-(defmulti reshape (fn [node x y width height] (proto node)))
-(defmethod reshape :default
-  [node x y width height]
+    (.pack frame)
+    (.setVisible frame true)
 
-  (println "ui:reshape: " x y width height)
-  (with-gl 
-    (.glMatrixMode GL/GL_PROJECTION)
-    (.glLoadIdentity)
-    (.glOrtho -1 1 -1 1 1 100)))
-
-(def gl-handler 
-     (proxy [GLEventListener] []
-       (init [dr]
-	 
-	 (println "gl-handler:init")
-	 (bind-gl dr
-	   (with-gl 
-	     (.glClearColor 0 0 0 1))))
-       
-       ;; Called when the GL canvas is resized
-       (reshape
-	 [drw x y width height]
-	 
-	 (println "gl-handler:reshape " x y width height)
-	 (bind-gl drw
-	   (alter-scene reshape x y width height)))
-       
-       ;; Called when the display mode changes
-       (displayChanged 
-	 [drw modeChanged deviceChanged]
-	 
-	 (println "gl-handler:displayChanged"))
-
-       ;; Called when the display needs to be updated.
-       (display
-	 [drw]
-
-	 (println "gl-handler:display")
-	 (bind-gl drw
-	   (alter-scene render)))))
-
-(def key-handler
-     (proxy [KeyListener] []
-       
-       (keyPressed [ev]
-	 (println "keyPressed: " ev)
-	 (alter-scene key-down ev))
-       
-       (keyReleased [ev]
-	 (println "keyReleased: " ev)
-	 (alter-scene key-up ev))
-       
-       (keyTyped [ev]
-	 (println "keyTyped: " ev)
-	 (alter-scene key-pressed ev))))
-
-(def mouse-handler
-     (proxy [MouseListener] []
-
-       (mouseClicked [ev]
-	 (println "mouseClicked: " ev)
-	 (alter-scene mouse-clicked ev))
-
-       (mouseEntered [ev]
-	 (println "mouseEntered: " ev)
-	 (alter-scene mouse-entered ev))
-       
-       (mouseExited [ev]
-	 (println "mouseExited: " ev)
-       	 (alter-scene mouse-exited ev))
-
-       (mousePressed [ev]
-	 (println "mousePressed: " ev)
-	 (alter-scene mouse-down ev))
-
-       (mouseReleased [ev]
-	 (println "mouseReleased: " ev)
-	 (alter-scene mouse-up ev))))
-
-(def mouse-wheel-handler
-     (proxy [MouseWheelListener] []
-       
-       (mouseWheelMoved [ev]
-	 (println "mouseWheelMoved: " ev)
-	 (alter-scene mouse-wheel-moved ev))))
+    frame))
 
 (defn -main [args]
-  (let [[frame canvas] (open-frame "Sparforge" gl-handler)]
-
-    ;; Connect handlers
-    (.addKeyListener canvas key-handler)
-    (.addMouseListener canvas mouse-handler)
-    (.addMouseWheelListener canvas mouse-wheel-handler)
+  (let [canvas (create-canvas :doubleBuffered true,
+			      :hardwareAccelerated true),
+	frame (open-frame "Sparforge"
+			  canvas
+			  :preferredSize (Dimension. 800 600),
+			  :minimumSize (Dimension. 640 480),
+			  :resizable true)]
     frame))
